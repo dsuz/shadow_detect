@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace ShadowDetect
 {
+    public enum ShadowState { UNDEFINED, ON, OUT};
     public class ShadowDetect : MonoBehaviour
     {
         private List<Light> _lights;
@@ -34,19 +35,19 @@ namespace ShadowDetect
         [Tooltip("Event call if the GameObject exit a shadow")]
         private UnityEvent _onExitShadow;
 
-        private bool _isOnShadow = false;
-        private bool _lastValue = false;
+        private ShadowState _isOnShadow = ShadowState.UNDEFINED;
+        private ShadowState _lastValue = ShadowState.UNDEFINED;
 
         public bool IsOnShadow
         {
             get
             {
-                return _isOnShadow;
+                return (_isOnShadow == ShadowState.ON);
             }
 
             private set
             {
-                _isOnShadow = value;
+                _isOnShadow = (value)? ShadowState.ON : ShadowState.OUT;
             }
         }
 
@@ -127,14 +128,15 @@ namespace ShadowDetect
             }
 
             //Call Events
-            if (_lastValue != IsOnShadow)
+            if (_lastValue != _isOnShadow)
+            {
                 OnChangeState.Invoke(IsOnShadow);
-            if (IsOnShadow)
-                OnEnterShadow.Invoke();
-            else
-                OnExitShadow.Invoke();
-
-            _lastValue = IsOnShadow;
+                if (IsOnShadow)
+                    OnEnterShadow.Invoke();
+                else
+                    OnExitShadow.Invoke();
+            }
+            _lastValue = _isOnShadow;
         }
 
         /// <summary>
