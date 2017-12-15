@@ -9,11 +9,13 @@ public class ShadowUtility : MonoBehaviour
 
     public void OnEnterShadow()
     {
-        if (m_messsageText) m_messsageText.text = "影を踏んでいる";
+        Debug.Log("Enter Shadow");
+        if (m_messsageText) m_messsageText.text = "Step on shadow";
     }
 
     public void OnExitShadow()
     {
+        Debug.Log("Exit Shadow");
         if (m_messsageText) m_messsageText.text = "";
     }
 }
